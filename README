@@ -1,0 +1,20 @@
+A Library and Preprocessor for Causal Commutative Arrows (CCA)
+==============================================================
+
+This library implements the CCA normalization described in the paper [1].
+It uses Template Haskell as a staged compilation for arrow programs written
+in arrow syntax. A modified arrow preprocesor based on Paterson's arrowp
+program, now called ccap, is provided to help preparing proper input to 
+Template Haskell. 
+
+Note that this is a preliminary release, and still very experimental. Please
+send your feedbacks directly to Paul H. Liu <paul@thev.net>, as well as
+Eric Cheng <eric.cheng@yale.edu>. All suggestions are welcome.
+
+----
+Last Modified: Wed Sep 09 EDT 2009
+
+[1]: Hai Liu, Eric Cheng, and Paul Hudak. Causal Commutative Arrows and Their
+Optimization. Proceedings of the 14th ACM SIGPLAN International Conference on
+Functional Programming (ICFP 2009). Edinburgh, Scotland. August 2009 
+
