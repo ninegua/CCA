@@ -10,11 +10,13 @@ import Prelude hiding (init, exp)
 #endif
 
 import Control.Arrow
+import Control.CCA
 import Control.CCA.CCNF
 import Control.CCA.Types
 import System.IO
 import System.CPUTime
 import Sample 
+import qualified Sample1 as S
 
 newtype SF a b = SF { runSF :: (a -> (b, SF a b)) }
 
@@ -70,16 +72,11 @@ instance ArrowLoop SF where
 instance ArrowInit SF where
   init i = SF (f i)
     where f i x = (i, SF (f x))
-  loopD i g = SF (f i g)
+  loopD i g = SF (f i) 
     where
-      f i g x = 
-        let ((y, i'), g') = runSF g (x, i)
-        in (y, SF (f i' g'))
-  loopB i g = SF (f i g)
-    where
-      f i g x = 
-        let ((y, (z, i')), g') = runSF g (x, (z, i))
-        in (y, SF (f i' g'))
+      f i x = 
+        let (y, i') = g (x, i)
+        in (y, SF (f i'))
 
 run :: SF a b -> [a] -> [b]
 run (SF f) (x:xs) =
@@ -113,28 +110,41 @@ gnuplot f l = do
             (zip [0, dt..] l)
       hClose h
 
-plot3sec fn sf = gnuplot fn (take (sr * 3) (unfold sf))
+plot3sec fn = gnuplot fn . take (sr * 3) . unfold 
 
 testcase list = do
   ts <- mapM timer list
   let ts' = map (\x -> 1 / fromIntegral x) ts
   let x = minimum ts'
   let ns = map (/x) ts'
-  sequence_ $ [ putStr (show (fromIntegral (floor (x * 100)) / 100) ++ "\t") | x <- ns ]
+  sequence_ [ putStr (show (fromIntegral (floor (x * 100)) / 100) ++ "\t") | x <- ns ]
   putStrLn "\n"
 
 main = do
   let n = 1000000
   putStrLn "Compare exp singal function"
-  testcase $ [nth n exp, nth n expNorm, nth' n expOpt]
+  testcase [nth n S.exp, nth n exp, expNorm n, expOpt n]
   putStrLn "Compare sine singal function"
-  testcase $ [nth n sine2, nth n sineNorm, nth' n sineOpt]
+  testcase [nth n (S.sine 2), nth n (sine 2), sineNorm n, sineOpt n]
+  putStrLn "Compare oscSine singal function"
+  testcase [nth n (S.testOsc S.oscSine), nth n (testOsc oscSine), oscNorm n, oscOpt n]
+  putStrLn "Compare sciFi singal function"
+  testcase [nth n S.sciFi, nth n sciFi, sciFiNorm n, sciFiOpt n]
+  putStrLn "Compare robot singal function"
+  testcase [nth n (S.testRobot S.robot), nth n (testRobot robot), robotNorm n, robotOpt n]
 
-expNorm = $(norm exp)
-expOpt = $(normOpt exp)
+expNorm n = nth n $(norm exp)
+expOpt n = nth' n $(normOpt exp)
 
-sine2 = sine 2
-sineNorm = $(norm $ sine 2)
-sineOpt = $(normOpt $ sine 2)
+sineNorm n = nth n $(norm $ sine 2)
+sineOpt n = nth' n $(normOpt $ sine 2)
 
+oscNorm n = nth n $(norm $ testOsc oscSine)
+oscOpt n = nth' n $(normOpt $ testOsc oscSine) 
+
+sciFiNorm n = nth n $(norm sciFi)
+sciFiOpt n = nth' n $(normOpt sciFi)
+
+robotNorm n = nth n $(norm $ testRobot robot)
+robotOpt n = nth' n $(normOpt $ testRobot robot)
 

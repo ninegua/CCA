@@ -1,8 +1,4 @@
-{-# OPTIONS -fglasgow-exts #-}
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE MagicHash, CPP, TemplateHaskell, FlexibleInstances, TypeSynonymInstances #-}
 
 module Language.Haskell.TH.Instances where
 import Data.Ratio
@@ -39,6 +35,28 @@ instance Lift OccName where
   lift s = let s' = occString s in [|mkOccName s'|]
 
 fromInt (I# i) = i
+
+#if __GLASGOW_HASKELL__ >= 612
+
+instance Lift ModName where
+  lift = lift . modString
+
+instance Lift PkgName where
+  lift = lift . pkgString
+
+instance Lift Pred where
+  lift (ClassP n ts) = [|ClassP n ts|]
+  lift (EqualP t t2) = [|EqualP t t2|]
+
+instance Lift Kind where
+  lift StarK = [|StarK|]
+  lift (ArrowK k1 k2) = [|ArrowK k1 k2|]
+
+instance Lift TyVarBndr where
+  lift (PlainTV n) = [|PlainTV n|]
+  lift (KindedTV n k) = [|KindedTV n k|]
+
+#endif
 
 instance Lift NameFlavour where
   lift NameS = [|NameS|]

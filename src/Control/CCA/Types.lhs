@@ -18,9 +18,7 @@
 >   arr' _ = arr
 >   init' :: ExpQ -> b -> a b b
 >   init' _ = init
->   loopD :: e -> a (b, e) (c, e) -> a b c 
->   loopD i f = loop (f >>> second (init i))
->   loopB :: e -> a (b, (d, e)) (c, (d, e)) -> a b c
->   loopB i f = loop (f >>> second (second (init i)))
+>   loopD :: e -> ((b, e) -> (c, e)) -> a b c 
+>   loopD i f = loop (arr f >>> second (init i))
 
 

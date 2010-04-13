@@ -2,7 +2,7 @@ GHC = ghc
 ARROWP = ccap
 FLAGS = -fvia-C -fno-method-sharing -fexcess-precision -O2 -XTemplateHaskell 
 
-Main: Main.hs Sample.hs
+Main: Main.hs Sample.hs Sample1.hs
 	$(GHC) $(FLAGS) --make Main.hs
 
 %.hs: %.as

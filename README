@@ -11,8 +11,17 @@ Note that this is a preliminary release, and still very experimental. Please
 send your feedbacks directly to Paul H. Liu <paul@thev.net>, as well as
 Eric Cheng <eric.cheng@yale.edu>. All suggestions are welcome.
 
+ChangeLog:
+
+    Mon Apr 12 EDT 2010: 
+
+        Normalize to loopD instead of loopB, add more test cases, add support
+        for GHC 6.12.1, and bump version to 0.1.3.
+
+    Sun Sep 13 EDT 2009: Some cleanup using HLint, bump version to 0.1.2.
+
 ----
-Last Modified: Wed Sep 09 EDT 2009
+Last Modified: Wed Sep 13 EDT 2009
 
 [1]: Hai Liu, Eric Cheng, and Paul Hudak. Causal Commutative Arrows and Their
 Optimization. Proceedings of the 14th ACM SIGPLAN International Conference on

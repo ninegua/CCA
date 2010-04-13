@@ -1,8 +1,10 @@
-module Sample where
+{-# LANGUAGE Arrows #-}
+module Sample1 where
 
-import Control.CCA
+
+import Control.Arrow
+import Control.CCA.Types
 import Prelude hiding (init, exp)
-import Language.Haskell.TH
 
 sr = 44100 :: Int
 dt = 1 / (fromIntegral sr)
@@ -37,7 +39,7 @@ oscSine f0 = proc cv -> do
   returnA -< sin phi
 
 testOsc :: ArrowInit a => (Double -> a Double Double) -> a () Double
-testOsc f = constant 1 >>> f 440
+testOsc f = arr (const 1) >>> f 440
 
 sciFi :: ArrowInit a => a () Double
 sciFi = proc () -> do

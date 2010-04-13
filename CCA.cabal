@@ -1,5 +1,5 @@
 Name:           CCA
-Version:        0.1.1
+Version:        0.1.3
 Cabal-Version:  >= 1.2
 Build-Type:     Simple
 License:        BSD3
@@ -36,4 +36,6 @@ Executable ccap
     Build-Depends:  base >= 3 && < 5, array, containers, haskell-src
     Hs-Source-Dirs: preprocessor
 
-
+source-repository head
+  type:     darcs
+  location: http://code.haskell.org/CCA/

@@ -1,10 +1,9 @@
-> {-# LANGUAGE TemplateHaskell #-}
-> {-# LANGUAGE FlexibleInstances #-}
+> {-# LANGUAGE TemplateHaskell, FlexibleInstances #-}
 
 > module Control.CCA 
 >   ((>>>), (<<<), first, second, (***), (&&&), loop, 
 >    Arrow, ArrowLoop, ArrowInit, 
->    arr, init, arr', init',
+>    arr, init, arr', init', constant,
 >    norm, normOpt) where
 
 > import Control.Arrow hiding (arr, returnA)
@@ -21,6 +20,6 @@
 > init :: ExpQ -> ExpQ
 > init i = appE [|init' i|] i
 
-> returnA :: ArrowInit a => a b b
-> returnA = arr' [|id|] id
+> constant :: (ArrowInit a, Lift b) => b -> a () b
+> constant c = arr' [|const c|] (const c)
 
