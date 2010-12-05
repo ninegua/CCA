@@ -124,7 +124,8 @@ CCNF in the form loopD i (arr f).
 > normOpt (AExp e) = 
 >   case normE e of
 >     LoopD i f -> tupE [i, f]
->     _         -> error "The given arrow can't be normalized to optimized CCNF." 
+>     Arr f     -> [| ( (), $(f) ) |]
+>     _         -> error "The given arrow can't be normalized to optimized CCNF."
 
 pprNorm and pprNormOpt return the pretty printed normal forms as a 
 string.
