@@ -136,6 +136,7 @@ string.
 
 fromAExp converts AExp back to TH Exp structure.
 
+> fromAExp :: AExp -> ExpQ
 > fromAExp (Arr f) = appE [|arr|] f
 > fromAExp (First f) = appE [|first|] (fromAExp f)
 > fromAExp (f :>>> g) = infixE (Just (fromAExp f)) [|(>>>)|] (Just (fromAExp g))
@@ -206,8 +207,10 @@ Auxiliary Functions
 >   Left  (x, y) -> (Left  x, y)
 >   Right (x, y) -> (Right x, y)
  
+> o :: ExpQ -> ExpQ -> ExpQ
 > f `o` g = appE (appE [|(.)|] f) g
 > f `crossE` g = appE (appE [|cross|] f) g
+> idE :: ExpQ
 > idE = [|id|]
 > dupE = [|dup|]
 > swapE = [|swap|]
