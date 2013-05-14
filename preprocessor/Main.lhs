@@ -6,6 +6,9 @@
 > import System.Exit
 > import System.IO
 
+> import Control.Exception
+> import Prelude hiding (catch)
+
 > import Language.Haskell.ParseMonad
 > import Language.Haskell.Syntax
 > import Language.Haskell.Pretty
@@ -33,8 +36,8 @@
 >	" in column " ++ show (srcColumn loc))
 >   exitFailure
 
-> programError :: String -> IO a
-> programError mesg = do
+> programError :: SomeException -> String -> IO a
+> programError e mesg = do
 >   progName <- getProgName
 >   hPutStrLn stderr (progName ++ ": " ++ mesg)
 >   exitFailure
@@ -42,7 +45,7 @@
 > usageError :: String -> IO a
 > usageError mesg = do
 >   progName <- getProgName
->   programError (mesg ++
+>   programError undefined (mesg ++
 >	 "Try `" ++ progName ++ " --help' for more information.")
 
 > options :: [OptDescr Flag]
@@ -94,11 +97,11 @@ Available styles: first is default
 >		_       -> usageError "too many arguments\n"
 >	    let mode = defaultParseMode {parseFilename = origName}
 >	    inp <- if inName == "-" then getContents else
->		   readFile inName `catch` \_err ->
->			programError ("can't read `" ++ inName ++ "'")
+>		   readFile inName `catch` \err ->
+>			programError err ("can't read `" ++ inName ++ "'")
 >	    outH <- if outName == "-" then return stdout else
->		    openFile outName WriteMode `catch` \_err ->
->			programError ("can't write to `" ++ outName ++ "'")
+>		    openFile outName WriteMode `catch` \err ->
+>			programError err ("can't write to `" ++ outName ++ "'")
 >	    outp <- case action of
 >		ParsePretty layout -> case parseModuleWithMode mode inp of
 >			ParseOk mod ->

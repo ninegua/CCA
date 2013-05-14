@@ -48,9 +48,25 @@ instance Lift Pred where
   lift (ClassP n ts) = [|ClassP n ts|]
   lift (EqualP t t2) = [|EqualP t t2|]
 
+#if MIN_VERSION_template_haskell(2,8,0)
+
+instance Lift Kind where
+  lift StarT = [|StarT|]
+  lift (ForallT n c t) = [|ForallT n c t|]
+  lift (VarT n) = [|VarT n|]
+  lift (ConT n) = [|ConT n|]
+  lift (TupleT i) = [|TupleT i|]
+  lift (ArrowT) = [|ArrowT|]
+  lift (ListT) = [|ListT|]
+  lift (AppT t1 t2) = [|AppT t1 t2|]
+
+#else
+
 instance Lift Kind where
   lift StarK = [|StarK|]
   lift (ArrowK k1 k2) = [|ArrowK k1 k2|]
+
+#endif
 
 instance Lift TyVarBndr where
   lift (PlainTV n) = [|PlainTV n|]
@@ -80,6 +96,9 @@ instance Lift Stmt where
 instance Lift Match where
   lift (Match p b d) = [|Match p b d|]
 
+
+#if ! MIN_VERSION_template_haskell(2,8,0)
+
 instance Lift Type where
   lift (ForallT n c t) = [|ForallT n c t|]
   lift (VarT n) = [|VarT n|]
@@ -88,6 +107,8 @@ instance Lift Type where
   lift (ArrowT) = [|ArrowT|]
   lift (ListT) = [|ListT|]
   lift (AppT t1 t2) = [|AppT t1 t2|]
+
+#endif
 
 instance Lift Pat where
   lift (LitP l) = [|LitP l|]
