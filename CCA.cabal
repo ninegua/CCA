@@ -37,5 +37,5 @@ Executable ccap
     Hs-Source-Dirs: preprocessor
 
 source-repository head
-  type:     darcs
-  location: http://code.haskell.org/CCA/
+  type:     git
+  location: https://github.com/ninegua/CCA
