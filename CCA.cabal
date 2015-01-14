@@ -32,6 +32,7 @@ library
 
 Executable ccap
     Main-is:        Main.lhs
+    build-tools:    happy
     Other-Modules:  ArrCode ArrSyn Lexer Parser Parser State Utils
     Build-Depends:  base >= 3 && < 5, array, containers, haskell-src
     Hs-Source-Dirs: preprocessor
