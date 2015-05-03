@@ -7,7 +7,7 @@ import GHC.Prim
 import Language.Haskell.TH.Syntax
 
 instance Lift a => Lift (Q a) where
-  lift x = x >>= \x -> [| return x |] 
+  lift x = x >>= \x -> [| return x |]
 
 instance Lift Exp where
   lift (VarE name) = [|VarE name|]
@@ -44,9 +44,13 @@ instance Lift ModName where
 instance Lift PkgName where
   lift = lift . pkgString
 
+#if ! MIN_VERSION_template_haskell(2,10,0)
+
 instance Lift Pred where
   lift (ClassP n ts) = [|ClassP n ts|]
   lift (EqualP t t2) = [|EqualP t t2|]
+
+#endif
 
 #if MIN_VERSION_template_haskell(2,8,0)
 
@@ -74,12 +78,25 @@ instance Lift TyVarBndr where
 
 #endif
 
+#if MIN_VERSION_template_haskell(2,10,0)
+
+instance Lift NameFlavour where
+  lift NameS = [|NameS|]
+  lift (NameQ n) = [|NameQ n|]
+  lift (NameU i) = [|NameU (fromInt i)|]
+  lift (NameL i) = [|NameL (fromInt i)|]
+  lift (NameG n p m) = [|NameG n p m|]
+
+#else
+
 instance Lift NameFlavour where
   lift NameS = [|NameS|]
   lift (NameQ n) = [|NameQ n|]
   lift (NameU i) = let i' = I# i in [|NameU (fromInt i')|]
   lift (NameL i) = let i' = I# i in [|NameL (fromInt i')|]
   lift (NameG n p m) = [|NameG n p m|]
+
+#endif
 
 instance Lift Range where
   lift (FromR e) = [|FromR e|]
@@ -187,12 +204,14 @@ instance Lift Callconv where
   lift (CCall) = [|CCall|]
   lift (StdCall) = [|StdCall|]
 
+#if ! MIN_VERSION_template_haskell(2,10,0)
+
 instance Lift Rational where
   lift r = let n = numerator r
                d = denominator r
            in [|n % d|]
 
 instance Lift Double where
-  lift d = [| D# $(return (LitE (DoublePrimL (toRational d)))) |]    
+  lift d = [| D# $(return (LitE (DoublePrimL (toRational d)))) |]
 
- 
+#endif
